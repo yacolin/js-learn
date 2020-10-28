@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LocalStorage Expiry Example</title>
+</head>
+<body>
+    <button id="btn-set">Set</button>
+    <input id="input-set" />
+    <br />
+    <br />
+
+    <button id="btn-get">Get</button>
+    <div>Value: <span id="value"></span></div>
+
+    <script type="text/javascript">
+        const btnSet = document.getElementById('btn-set');
+        const btnGet = document.getElementById('btn-get');
+        const inputSet = document.getElementById('input-set');
+        const valueDisplay = document.getElementById('value');
+
+
+        btnSet.addEventListener('click', () => {
+            setWithExpiry('myKey', inputSet.value, 5000);   
+        })
+
+        btnGet.addEventListener('click', () => {
+            const value = getWithExpiry('myKey');
+            valueDisplay.innerHTML = value;
+        })
+
+        function setWithExpiry(key, value, ttl) {
+            const now = new Date();
+
+            const item = {
+                value: value,
+                expiry: now.getTime() + ttl,
+            }
+
+            localStorage.setItem(key, JSON.stringify(item));
+        }
+
+        function getWithExpiry(key) {
+            const itemStr = localStorage.getItem(key);
+
+            if (!itemStr) return null;
+
+            const item = JSON.parse(itemStr);
+            const now = new Date();
+
+            // 对比有效时间和当前时间
+            if (now.getTime() > item.expiry) {
+                console.log('已过期');
+                localStorage.removeItem(key);
+                return null;
+            }
+
+            return item.value;
+        }
+    </script>
+</body>
+</html>
