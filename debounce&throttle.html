@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>防抖&节流</title>
+</head>
+<body style="height: 800vh;">
+    <script>
+        var debounceFn = debounce((...args) => {
+            console.log('resize', args);
+        }, 500);
+
+        var throttleFn = throttle((...args) => {
+            console.log('scroll', args)
+        }, 1000);
+        window.addEventListener('resize', () => debounceFn(123, 345, 678));
+        window.addEventListener('scroll', () => throttleFn(123, 456, 789));
+
+        function debounce(fn, delay) {
+            let timer = null;
+
+            return function() {
+                let args = arguments;
+                clearTimeout(timer);
+
+                timer = setTimeout(() => {
+                    fn.apply(this, args);
+                }, delay)
+            }
+        }
+
+        function throttle(fn, delay) {
+            let timer = null;
+            return function() {
+                let args = arguments;
+
+                if (!timer) {
+                    timer = setTimeout(() => {
+                        timer = null;
+                        fn.apply(this, args);
+                    }, delay)
+                }
+            }
+        }
+    </script>
+</body>
+</html>
