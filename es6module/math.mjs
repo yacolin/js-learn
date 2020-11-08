@@ -2,7 +2,11 @@
 var basicNum = 0;
 
 function add(a, b) {
-	return a + b;
+  return a + b;
 }
 
-export { add, basicNum };
+function increase() {
+  basicNum++;
+}
+
+export { add, basicNum, increase };
