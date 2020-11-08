@@ -13,9 +13,22 @@ function increase() {
   basicNum++;
 }
 
+var obj = {
+  a: 1,
+  b: {
+    c: 2,
+  },
+};
+
+function change() {
+  obj.b.c = 3;
+}
+
 // 写上需要对外暴露的函数变量
 module.exports = {
+  basicNum: basicNum,
+  obj: obj,
   add: add,
   increase: increase,
-  basicNum: basicNum,
+  change: change,
 };
