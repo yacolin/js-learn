@@ -1,0 +1,109 @@
+.wrapper {
+  display: flex;
+  flex-wrap: wrap;
+}
+.container {
+  width: 200px;
+  height: 200px;
+  margin: 0 20px 20px 0;
+  border: 1px solid;
+}
+
+.box {
+  width: 50px;
+  height: 50px;
+  border: 1px solid red;
+}
+
+/* 绝对定位 + margin：auto */
+.con1 {
+  position: relative;
+}
+.box1 {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+}
+
+/* 绝对定位 + 负margin值 */
+.con2 {
+  position: relative;
+}
+
+.box2 {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  margin-left: -25px;
+  margin-top: -25px;
+}
+
+/* 绝对定位 + transform translate负百分比值（相对自身值） */
+.con3 {
+  position: relative;
+}
+
+.box3 {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* inline-block */
+.con4 {
+  text-align: center;
+  line-height: 200px;
+}
+.box4 {
+  display: inline-block;
+}
+
+/* flex */
+.con5 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* 绝对定位 + calc计算 */
+.con6 {
+  position: relative;
+}
+.box6 {
+  position: absolute;
+  left: calc(50% - 25px);
+  top: calc(50% - 25px);
+}
+
+/* 伪元素实现 */
+.con7 {
+  text-align: center;
+}
+.con7::after {
+  content: "";
+  display: inline-block;
+  height: 100%;
+  vertical-align: middle;
+}
+
+.box7 {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+/* table-cell  加入table包裹层 */
+.table {
+  display: table;
+}
+.con8 {
+  display: table-cell;
+  text-align: center;
+  vertical-align: middle;
+}
+.box8 {
+  display: inline-block;
+}
