@@ -62,3 +62,51 @@ UDP(User Datagram Protocal) 是不具有可靠性的数据协议。细微的处�
 5. SLB根据浏览器请求的资源和地址，选出最优的缓存服务器发回给浏览器。
 6. 浏览器再根据SLB发回的地址重定向到缓存服务器。
 7. 如果缓存服务器有浏览器需要的资源，就将资源发回给浏览器。如果没有，就向源服务器请求资源，再发给浏览器并缓存在本地。
+
+
+
+
+# [跨域资源共享（CORS Cross-Origin Resource Sharing）](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Access_control_CORS)
+跨域资源共享是一种HTTP头机制，该机制通过允许服务器标示除了它自己以外的其它origin（域，协议和端口），这样浏览器可以访问加载这些资源。跨域资源共享还通过一种机制来检查服务器是否会允许要发送的真是请求，该机制通过浏览器发起一个到服务器托管的跨域资源的“预检”请求。在预检请求中，浏览器发送的头中标示有HTTP方法和真是请求中会用到的头。
+
+## 简单请求
+某些请求不会触发CORS预检请求，本文称这样的请求为“简单请求”。若请求满足所有下述条件，则该请求可视为“简单请求”：
+* 使用下列方法之一
+  * GET
+  * HEAD
+  * POST
+
+* 除了被用户代理自动设置的首部字段（例如 Connection，User-Agent） 和在Fetch规范中定义为禁用首部名称的其他首部，允许认为设置的字段为Fetch规范定义的对CORS安全的首部字段集合。该集合为：
+  * Accept
+  * Accept-Language
+  * Content-Language
+  * Content-Type（需要额外追限制）
+  * DPR
+  * DownLink
+  * Save-Data
+  * Width
+
+* Content-Type的值仅限于下列三者之一：
+  * text/plain
+  * multipart/form-data
+  * application/x-www-form-urlencode
+
+* 请求中的任意XMLHttpRequestUpload对象均没有注册任何事件监听器；XMLHttpRequestUpload对象合一使用XMLHttpRequest.upload属性访问。
+* 请求中没有使用ReadableStream对象
+
+## 预检请求
+与前述简单请求不同，“需预检的请求”要求必须首先使用OPTIONS方法发起一个预检请求到服务器，以获知服务器是否允许该实际请求。”预检请求“的使用，可以避免跨域请求对服务器的用户数据产生为预期的影响。
+
+
+## HTTP响应首部字段
+* Access-Control-Allow-Origin
+* Access-Control-Expose-Headers
+* Access-Control-Max-Age
+* Access-Control-Allow-Credentials
+* Access-Control-Allow-Methods
+* Access-Control-Allow-Headers
+
+## HTTP请求首部字段
+* Origin
+* Access-Control-Request-Method
+* Access-Control-Request-Headers
