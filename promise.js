@@ -163,4 +163,12 @@ class Promise {
       });
     });
   }
+
+
+  static finally(callback) {
+    return this.then(
+      (data) => Promise.resolve(callback()).then(() => data),
+      (err) => Promise.resolve(callback).then(err => { throw err })
+    )
+  }
 }
