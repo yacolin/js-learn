@@ -84,6 +84,26 @@ var obj = {
   obj.l.p,
 ];
 
+var getPath = (obj, str, num) => {
+  let arr = [];
+
+  const traverseObj = (obj, str) => {
+    for (var key in obj) {
+      let _key = `${str}.${key}`;
+
+      if (obj[key] === num) {
+        arr.push(_key);
+      } else {
+        traverseObj(obj[key], _key);
+      }
+    }
+  };
+
+  traverseObj(obj, str);
+
+  return arr;
+};
+
 setTimeout(() => {
   // 执行3s
 }, 500);

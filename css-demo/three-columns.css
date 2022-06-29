@@ -1,0 +1,39 @@
+.container {
+    height: 800px;
+}
+.container div {
+    height: 100%;
+}
+
+.left {
+    background-color: brown;
+}
+.right {
+    background-color: darkcyan;
+}
+
+.center {
+    background-color: darkgoldenrod;
+}
+
+.flex {
+    display: flex;
+}
+
+.flex .left,
+.flex .right {
+    flex: 0;
+    flex-basis: 200px;
+}
+
+.flex .center {
+    flex: 1;
+    order: 1;
+}
+
+.flex .left {
+    order: 0
+}
+.flex .right {
+    order: 2
+}

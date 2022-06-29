@@ -32,7 +32,7 @@ function Promise(fn) {
 
   this._state = 0; // number
   this._handled = false; // boolean
-  this._value = undefined; // promise | undefind
+  this._value = undefined; // promise | undefined
   this._defereds = []; // Array<Function>
 
   doResolve(fn, this);

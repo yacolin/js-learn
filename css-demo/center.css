@@ -6,13 +6,13 @@
   width: 200px;
   height: 200px;
   margin: 0 20px 20px 0;
-  border: 1px solid;
+  background-color: bisque;
 }
 
 .box {
   width: 50px;
   height: 50px;
-  border: 1px solid red;
+  background-color: brown;
 }
 
 /* 绝对定位 + margin：auto */
@@ -57,9 +57,11 @@
 .con4 {
   text-align: center;
   line-height: 200px;
+  font-size: 0;
 }
 .box4 {
   display: inline-block;
+  vertical-align: middle;
 }
 
 /* flex */
@@ -93,17 +95,4 @@
 .box7 {
   display: inline-block;
   vertical-align: middle;
-}
-
-/* table-cell  加入table包裹层 */
-.table {
-  display: table;
-}
-.con8 {
-  display: table-cell;
-  text-align: center;
-  vertical-align: middle;
-}
-.box8 {
-  display: inline-block;
 }

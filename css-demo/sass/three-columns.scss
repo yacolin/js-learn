@@ -1,0 +1,50 @@
+.container {
+    height: 400px;
+    margin-bottom: 10px;
+    div {
+        height: 100%;
+    }
+}
+.left {
+    background-color: brown;
+}
+.right {
+    background-color: darkcyan;
+}
+
+.center {
+    background-color: darkgoldenrod;
+}
+
+.flex {
+    display: flex;
+    .left, .right {
+        flex: 0;
+        flex-basis: 200px;
+    }
+    .left {
+        order: 0;
+    }
+    .right {
+        order: 2;
+
+    }
+    .center {
+        flex: 1;
+        order: 1;
+    }
+}
+
+.float {
+    .left, .right {
+        float: left;
+        width: 200px;
+    }
+    .right {
+        float: right;
+    }
+    .center {
+        margin-left: 200px;
+        margin-right: 200px;
+    }
+}
