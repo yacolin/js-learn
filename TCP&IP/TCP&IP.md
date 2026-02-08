@@ -54,77 +54,88 @@ TCP 的连接的拆除需要发送四个包，因此成为四次挥手(Four-way 
 
 按照常理，在网络正常的情况下，四个报文段发送完后，双方就可以关闭连接进入 CLOSED 状态了，但是网络并不总是可靠的，如果客户端发送的 ACK 报文段丢失，服务器在接收不到 ACK 的情况下会一直重发 FIN 报文段，这显然不是我们想要的。因此客户端为了确保服务器收到了 ACK，会设置一个定时器，并在 TIME-WAIT 状态等待 2MSL 的时间，如果在此期间又收到了来自服务器的 FIN 报文段，那么客户端会重新设置计时器并再次等待 2MSL 的时间，如果在这段时间内没有收到来自服务器的 FIN 报文，那就说明服务器已经成功收到了 ACK 报文，此时客户端就可以进入 CLOSED 状态了。
 
-## [CDN 原理](https://segmentfault.com/a/1190000022205291)
+## HTTPS 中的 TLS 原理
 
-### 没有 CDN
+TLS（Transport Layer Security，传输层安全协议）是 HTTPS 的核心安全协议，它提供了三个关键的安全特性：
 
-当用户访问一个网站时，如果没有 CDN，过程时这样的：
+1. 身份验证：通过数字证书验证服务器的身份，防止中间人攻击
+2. 数据加密：确保传输过程中数据的机密性
+3. 完整性校验：防止数据在传输过程中被篡改
 
-1. 浏览器将域名解析为 IP 地址，所以需要向本地 DNS 发出请求。
-2. 本地 DNS 依次向 根服务器、顶级域名服务器、权限域名服务器发出请求，得到网站服务器的 IP 地址。
-3. 本地 DNS 将 IP 地址发回给浏览器，浏览器向网站服务器 IP 地址发出请求并得到资源。
+TLS 握手过程包括以下步骤：
 
-### 部署了 CDN
+1. 客户端发送 ClientHello 消息，包含支持的 TLS 版本、随机数和支持的加密套件
+2. 服务器响应 ServerHello，选择具体的 TLS 版本、加密套件并提供数字证书和随机数
+3. 客户端验证证书有效性并生成预主密钥，用服务器公钥加密后发送
+4. 双方基于预主密钥和随机数生成相同的主密钥
+5. 双方使用主密钥生成 MAC 密钥和对称加密密钥，完成握手
 
-如果用户访问的网站部署了 CDN，过程时这样的：
+## Cookie、Session 与 LocalStorage 的区别
 
-1. 浏览器将域名解析为 IP 地址，所以需要向本地 DNS 发出请求。
-2. 本地 DNS 依次向根服务器、顶级域名服务器、权限服务器发出请求，得到全局负载均衡系统(Global Server Load Balance GSLB)的 IP 地址。
-3. 本地 DNS 在想 GSLB 发出请求，GSLB 的主要功能是根据本地 DNS 的 IP 地址判断用户的位置，筛选出距离用户较近的本地负载均衡系统(SLB)，并将该 SLB 的 IP 地址作为结果返回给本地
-4. 本地的 DNS 将 SLB 的 IP 地址发回给浏览器，浏览器向 SLB 发出请求。
-5. SLB 根据浏览器请求的资源和地址，选出最优的缓存服务器发回给浏览器。
-6. 浏览器再根据 SLB 发回的地址重定向到缓存服务器。
-7. 如果缓存服务器有浏览器需要的资源，就将资源发回给浏览器。如果没有，就向源服务器请求资源，再发给浏览器并缓存在本地。
+### Cookie
 
-## [跨域资源共享（CORS Cross-Origin Resource Sharing）](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Access_control_CORS)
+Cookie 是存储在浏览器端的小型文本文件，由服务器发送给客户端，客户端会将其保存并在后续请求中携带 Cookie 发送给服务器。
 
-跨域资源共享是一种 HTTP 头机制，该机制通过允许服务器标示除了它自己以外的其它 origin（域，协议和端口），这样浏览器可以访问加载这些资源。跨域资源共享还通过一种机制来检查服务器是否会允许要发送的真是请求，该机制通过浏览器发起一个到服务器托管的跨域资源的“预检”请求。在预检请求中，浏览器发送的头中标示有 HTTP 方法和真实请求中会用到的头。
+特点：
 
-## 简单请求
+- 存储容量小（通常限制在 4KB 左右）
+- 每次请求都会携带在 HTTP 头部中，会增加请求体积
+- 可以设置过期时间
+- 可以设置作用域（domain、path）
+- 支持设置 HttpOnly、Secure、SameSite 等安全属性
+- 服务端和客户端都可以操作
 
-某些请求不会触发 CORS 预检请求，本文称这样的请求为“简单请求”。若请求满足所有下述条件，则该请求可视为“简单请求”：
+应用场景：
 
-- 使用下列方法之一
+- 用户身份认证
+- 记住登录状态
+- 用户偏好设置
 
-  - GET
-  - HEAD
-  - POST
+### Session
 
-- 除了被用户代理自动设置的首部字段（例如 Connection，User-Agent） 和在 Fetch 规范中定义为禁用首部名称的其他首部，允许认为设置的字段为 Fetch 规范定义的对 CORS 安全的首部字段集合。该集合为：
+Session 是存储在服务器端的数据，通过在客户端存储一个 Session ID 来识别对应的服务器端 Session 数据。
 
-  - Accept
-  - Accept-Language
-  - Content-Language
-  - Content-Type（需要额外追限制）
-  - DPR
-  - DownLink
-  - Save-Data
-  - Width
+特点：
 
-- Content-Type 的值仅限于下列三者之一：
+- 数据存储在服务器端，安全性较高
+- 无大小限制
+- 依赖于 Cookie 或 URL 重写等方式传递 Session ID
+- 服务器重启或超时会导致 Session 失效
+- 占用服务器内存资源
 
-  - text/plain
-  - multipart/form-data
-  - application/x-www-form-urlencode
+应用场景：
 
-- 请求中的任意 XMLHttpRequestUpload 对象均没有注册任何事件监听器；XMLHttpRequestUpload 对象合一使用 XMLHttpRequest.upload 属性访问。
-- 请求中没有使用 ReadableStream 对象
+- 用户登录后的会话管理
+- 存储敏感信息
+- 购物车数据
 
-## 预检请求
+### LocalStorage
 
-与前述简单请求不同，“需预检的请求”要求必须首先使用 OPTIONS 方法发起一个预检请求到服务器，以获知服务器是否允许该实际请求。”预检请求“的使用，可以避免跨域请求对服务器的用户数据产生为预期的影响。
+LocalStorage 是 HTML5 提供的一种 Web 存储方式，数据存储在浏览器端，除非手动清除否则永久有效。
 
-## HTTP 响应首部字段
+特点：
 
-- Access-Control-Allow-Origin
-- Access-Control-Expose-Headers
-- Access-Control-Max-Age
-- Access-Control-Allow-Credentials
-- Access-Control-Allow-Methods
-- Access-Control-Allow-Headers
+- 存储容量大（一般为 5MB-10MB）
+- 数据只存储在浏览器端，不会随请求发送给服务器
+- 数据持久化，除非手动删除否则永久保存
+- 同源策略限制（协议、域名、端口相同）
+- 只能在客户端操作
+- 基于字符串键值对存储
 
-## HTTP 请求首部字段
+应用场景：
 
-- Origin
-- Access-Control-Request-Method
-- Access-Control-Request-Headers
+- 缓存静态数据
+- 用户配置信息
+- 离线数据存储
+
+### 三者对比
+
+| 特性       | Cookie         | Session             | LocalStorage     |
+| ---------- | -------------- | ------------------- | ---------------- |
+| 存储位置   | 浏览器         | 服务器              | 浏览器           |
+| 存储容量   | ~4KB           | 无限制              | ~5-10MB          |
+| 生命周期   | 可设置过期时间 | 服务器设置超时      | 永久（手动清除） |
+| HTTP 请求  | 每次携带       | 通过 Cookie 传递 ID | 不发送           |
+| 安全性     | 较低           | 高                  | 中等             |
+| 服务端访问 | 可访问         | 可访问              | 无法访问         |
+| 客户端访问 | 可访问         | 通过接口访问        | 可访问           |
